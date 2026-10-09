@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "dev:api": "ts-node-dev --respawn --transpile-only --project MultiMartConnect/backend/tsconfig.json MultiMartConnect/backend/src/server.ts",
+    "seed": "ts-node-dev --transpile-only --project MultiMartConnect/backend/tsconfig.json MultiMartConnect/backend/src/scripts/seed.ts"
+  },
   "dependencies": {
     "@types/mongoose": "^5.11.96",
     "cors": "^2.8.6",

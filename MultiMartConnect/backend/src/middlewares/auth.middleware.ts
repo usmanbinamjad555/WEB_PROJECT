@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { JWT_ACCESS_SECRET } from '../config/env.config';
 
 interface TokenStructure {
   userId: string;
@@ -17,7 +18,7 @@ export function authenticatingPipeline(req: Request, res: Response, next: NextFu
 
   const tokenValue = directHeader.split(' ')[1];
   try {
-    const verified = jwt.verify(tokenValue, process.env.JWT_ACCESS_SECRET || 'secret') as TokenStructure;
+    const verified = jwt.verify(tokenValue, JWT_ACCESS_SECRET) as TokenStructure;
     
     if ((req as any).tenantId && (req as any).tenantId !== verified.tenantId) {
        res.status(403).json({ error: 'Identity containment context cross-tenant bound operations are explicitly banned.' });

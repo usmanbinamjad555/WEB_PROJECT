@@ -1,6 +1,7 @@
 import { Server as HttpServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import jwt from 'jsonwebtoken';
+import { JWT_ACCESS_SECRET } from '../config/env.config';
 
 interface DecodedToken {
   userId: string;
@@ -40,7 +41,7 @@ export class SocketEngine {
 
       try {
         const cleanToken = token.replace('Bearer ', '');
-        const decoded = jwt.verify(cleanToken, process.env.JWT_ACCESS_SECRET || 'secret') as unknown as DecodedToken;
+        const decoded = jwt.verify(cleanToken, JWT_ACCESS_SECRET) as unknown as DecodedToken;
         socket.data = {
           userId: decoded.userId,
           tenantId: decoded.tenantId,

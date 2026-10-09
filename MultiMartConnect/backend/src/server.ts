@@ -16,9 +16,8 @@ async function bootSystemCluster(): Promise<void> {
     await DatabaseConfig.connect();
 
     // 2. Fire up Caching configuration engines (OPTIONAL BYPASS)
-    let redisClient: any = null;
     try {
-      redisClient = await RedisConfig.getClient();
+      await RedisConfig.getClient();
       console.log('⚡ Redis Client successfully attached to clustering pipeline.');
     } catch (redisError) {
       console.warn('⚠️ Redis Caching engine skipped. Proceeding with database direct routes.');
@@ -35,47 +34,6 @@ async function bootSystemCluster(): Promise<void> {
     // 4. Wrap cluster server layer with instant WebSocket engines
     const socketEngine = SocketEngine.getInstance();
     socketEngine.initialize(server);
-
-    // ===================================================
-    // 💾 REDIS REAL-TIME CART PERSISTENCE ENDPOINTS
-    // ===================================================
-
-    // Endpoint A: Synchronize and backup cart array into Redis cache
-    app.post('/api/cart', async (req: any, res: any) => {
-      try {
-        const { userId, cartItems } = req.body;
-
-        if (!redisClient) {
-          return res.status(503).json({ error: 'Redis clustering engine is offline.' });
-        }
-
-        // Store the cart as a serialized string mapped to the user identity string
-        await redisClient.set(`cart:${userId}`, JSON.stringify(cartItems));
-        return res.status(200).json({ message: 'Cart synchronized with Redis successfully!' });
-      } catch (error: any) {
-        return res.status(500).json({ error: error.message });
-      }
-    });
-
-    // Endpoint B: Fetch cached cart back from Redis immediately on layout refresh
-    app.get('/api/cart/:userId', async (req: any, res: any) => {
-      try {
-        const { userId } = req.params;
-
-        if (!redisClient) {
-          return res.status(503).json({ error: 'Redis clustering engine is offline.' });
-        }
-
-        const savedCart = await redisClient.get(`cart:${userId}`);
-        
-        // If an active session payload exists, parse it; otherwise return a clean slate array
-        return res.status(200).json(savedCart ? JSON.parse(savedCart) : []);
-      } catch (error: any) {
-        return res.status(500).json({ error: error.message });
-      }
-    });
-
-    // ===================================================
 
     // 5. Initialize port 8000 listener
     server.listen(PORT, () => {

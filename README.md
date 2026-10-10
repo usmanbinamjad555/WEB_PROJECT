@@ -148,4 +148,4 @@ This is a work in progress. Current gaps:
 
 ---
 
-Author: Muhammad Usman — [LinkedIn](https://www.linkedin.com/in/muhammad-usman-the-dev) · [Portfolio](https://portfolio-usman-46c4.vercel.app)
+Author: Muhammad Usman — [LinkedIn](https://www.linkedin.com/in/muhammad-usman-the-dev) · [Portfolio](https://muhammad-usman-engineer.vercel.app)
